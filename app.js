@@ -59,7 +59,7 @@
       const dx = s.x - mouse.x;
       const dy = s.y - mouse.y;
       const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < REPEL_RADIUS) {
+      if (dist > 0 && dist < REPEL_RADIUS) {
         const force = (1 - dist / REPEL_RADIUS) * REPEL_STRENGTH;
         s.vx += (dx / dist) * force;
         s.vy += (dy / dist) * force;
@@ -378,34 +378,98 @@ function copyCmd(btn, text) {
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'");
 
-  navigator.clipboard.writeText(decoded).then(() => {
-    const orig = btn.textContent;
+  function markCopied() {
+    const originalLabel = btn.textContent;
     btn.textContent = '✓ done';
     btn.classList.add('copied');
     showToast('✓', 'Copied to clipboard');
     setTimeout(() => {
-      btn.textContent = orig;
+      btn.textContent = originalLabel;
       btn.classList.remove('copied');
     }, 1800);
-  }).catch(() => {
-    // Fallback
-    const ta = document.createElement('textarea');
-    ta.value = decoded;
-    ta.style.position = 'fixed';
-    ta.style.opacity = '0';
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    showToast('✓', 'Copied!');
-  });
+  }
+
+  function fallbackCopy() {
+    const textarea = document.createElement('textarea');
+    textarea.value = decoded;
+    textarea.setAttribute('readonly', '');
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    textarea.style.pointerEvents = 'none';
+    document.body.appendChild(textarea);
+
+    let copied = false;
+    try {
+      textarea.focus();
+      textarea.select();
+      copied = document.execCommand('copy') === true;
+    } catch (error) {
+      copied = false;
+    } finally {
+      textarea.remove();
+    }
+    return copied;
+  }
+
+  try {
+    const clipboard = navigator.clipboard;
+    if (clipboard && typeof clipboard.writeText === 'function') {
+      clipboard.writeText(decoded).then(markCopied).catch(() => {
+        if (fallbackCopy()) {
+          markCopied();
+        } else {
+          showToast('⚠', 'Clipboard access was denied');
+        }
+      });
+      return;
+    }
+  } catch (error) {
+    // Use the legacy fallback when the Clipboard API is unavailable.
+  }
+
+  if (fallbackCopy()) {
+    markCopied();
+  } else {
+    showToast('⚠', 'Clipboard is unavailable in this browser context');
+  }
 }
 
 
 /* ============================================================
    FAVORITES
    ============================================================ */
-let favorites = JSON.parse(localStorage.getItem('pwnref-favs') || '[]');
+function loadFavorites() {
+  try {
+    const stored = localStorage.getItem('pwnref-favs');
+    if (!stored) return [];
+
+    const parsed = JSON.parse(stored);
+    if (!Array.isArray(parsed)) return [];
+
+    return parsed
+      .filter(item => item && typeof item.cmd === 'string')
+      .map(item => ({
+        cmd: item.cmd,
+        desc: typeof item.desc === 'string' ? item.desc : '',
+        label: typeof item.label === 'string' ? item.label : 'Command',
+        id: Number.isFinite(item.id) ? item.id : null
+      }));
+  } catch (error) {
+    return [];
+  }
+}
+
+function saveFavorites() {
+  try {
+    localStorage.setItem('pwnref-favs', JSON.stringify(favorites));
+    return true;
+  } catch (error) {
+    showToast('⚠', 'Favorites could not be saved in this browser');
+    return false;
+  }
+}
+
+let favorites = loadFavorites();
 
 function toggleFav(btn) {
   const card = btn.closest('.cmd-card');
@@ -413,18 +477,25 @@ function toggleFav(btn) {
   const desc = card.dataset.desc || card.querySelector('.cmd-desc')?.textContent?.trim() || '';
   const label = card.querySelector('.cmd-label')?.textContent?.trim() || 'Command';
 
+  const previousFavorites = [...favorites];
   const existing = favorites.findIndex(f => f.cmd === cmd);
+  const message = existing >= 0 ? 'Removed from favorites' : 'Added to favorites';
+
   if (existing >= 0) {
     favorites.splice(existing, 1);
-    btn.classList.remove('faved');
-    showToast('☆', 'Removed from favorites');
   } else {
     favorites.push({ cmd, desc, label, id: Date.now() });
-    btn.classList.add('faved');
-    showToast('★', 'Added to favorites');
   }
 
-  localStorage.setItem('pwnref-favs', JSON.stringify(favorites));
+  if (!saveFavorites()) {
+    favorites = previousFavorites;
+    syncFavButtons();
+    updateFavCount();
+    renderFavList();
+    return;
+  }
+
+  showToast(existing >= 0 ? '☆' : '★', message);
   updateFavCount();
   renderFavList();
 }
@@ -451,8 +522,16 @@ function renderFavList() {
 }
 
 function deleteFav(idx) {
+  if (!Number.isInteger(idx) || idx < 0 || idx >= favorites.length) return;
+
+  const previousFavorites = [...favorites];
   favorites.splice(idx, 1);
-  localStorage.setItem('pwnref-favs', JSON.stringify(favorites));
+
+  if (!saveFavorites()) {
+    favorites = previousFavorites;
+    return;
+  }
+
   updateFavCount();
   renderFavList();
   syncFavButtons();
