@@ -65,7 +65,9 @@ The interface loads fonts from Google Fonts. The application itself has no appli
 
 ## Accuracy and safe use
 
-Command examples are starting points, not universal instructions. Before executing an example:
+Command examples are starting points, not universal instructions. Addresses and credentials shown in examples are placeholders (for example, `10.10.10.10`, `domain.htb`, `user@domain.htb`, and `password`); they are not real targets or credentials. Replace them with values from an authorized lab or assessment.
+
+Before executing an example:
 
 1. Confirm that the target and activity are within the authorized scope.
 2. Check the installed tool version and its current help or manual page.
