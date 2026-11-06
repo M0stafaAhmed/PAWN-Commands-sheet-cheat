@@ -81,4 +81,8 @@ The repository currently contains a static HTML/CSS/JavaScript application. A de
 
 ## License
 
-No license is currently included. This is intentional while the provenance of all code, descriptions, and command examples is being checked. Until a license is added, no permission to reuse or redistribute this repository is granted by an open-source license.
+PwnRef is licensed under the **MIT License**. See [LICENSE](./LICENSE).
+
+The license applies to the original project material that the repository owner is authorized to license. It does not grant rights to third-party trademarks, separately licensed material, or external services. Tool names belong to their respective owners. The Google Fonts stylesheet is loaded remotely; those font files are not bundled in this repository.
+
+MIT was selected because PwnRef is a small, static software project and a permissive software license is appropriate for its source code. The license allows reuse and modification while retaining the copyright and license notice.
