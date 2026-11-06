@@ -39,10 +39,10 @@ The repository includes a root-level `firebase.json` configured to publish the r
 
 ```bash
 firebase login
-firebase deploy --only hosting
+firebase deploy --only hosting --project YOUR_FIREBASE_PROJECT_ID
 ```
 
-The Firebase CLI must be installed and authenticated before deployment.
+The Firebase CLI must be installed and authenticated before deployment. Replace `YOUR_FIREBASE_PROJECT_ID` with the ID of the Firebase project you intend to deploy to.
 
 ## Repository layout
 
