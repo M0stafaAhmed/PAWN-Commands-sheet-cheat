@@ -81,10 +81,13 @@ The catalog is a personal reference and is subject to ongoing technical review. 
 
 The repository currently contains a static HTML/CSS/JavaScript application. A dedicated automated test suite and a complete command-by-command compatibility review have not yet been added.
 
-## License
+## License and permissions
 
-PwnRef is licensed under the **MIT License**. See [LICENSE](./LICENSE).
+This repository is **proprietary; all rights reserved**. You may view it where access is granted. For a public repository, GitHub's Terms of Service permit users to view and fork it on GitHub. Those platform permissions do not grant a general right to reuse, modify, redistribute, sublicense, or commercially exploit the original material outside GitHub.
 
-The license applies to the original project material that the repository owner is authorized to license. It does not grant rights to third-party trademarks, separately licensed material, or external services. Tool names belong to their respective owners. The Google Fonts stylesheet is loaded remotely; those font files are not bundled in this repository.
+Obtain prior, express, written permission from the copyright holder before any such use beyond the rights GitHub grants. Sending a request is not approval; wait for written authorization. See [LICENSE](./LICENSE) for the full scope, exclusions, permission-request route, and treatment of earlier license grants.
 
-MIT was selected because PwnRef is a small, static software project and a permissive software license is appropriate for its source code. The license allows reuse and modification while retaining the copyright and license notice.
+**Third-party material:** This notice covers only original material that the repository owner owns or is authorized to license. Third-party software, images, fonts, trademarks, curricula, standards, datasets, contributions, and other external content remain subject to their respective rights and terms. This repository does not relicense them.
+
+**Tool-reference boundary:** Tool names, command behavior, official documentation, and third-party product marks belong to their respective owners. The permission requirement applies only to original explanatory text and project code that the repository owner owns.
+
